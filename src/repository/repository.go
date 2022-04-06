@@ -1,0 +1,3 @@
+package repository
+
+/****ADD THE QUERY LOGIC HERE FOR EASE OF ACCESS IN THR SERVICE-FILE****/

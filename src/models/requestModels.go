@@ -1,4 +1,4 @@
-package dto
+package models
 
 import (
 	"time"
@@ -14,6 +14,7 @@ type Model struct {
 	DeletedAt gorm.DeletedAt `gorm:"index"`
 }
 
+/***REQ MODEL STRUCT FOR SLACK TEST***/
 type TestSlackMessage struct {
 	IntegrationName    string
 	HookUrl            string

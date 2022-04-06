@@ -2,7 +2,7 @@ package service
 
 import (
 	"fmt"
-	dto2 "web-api/src/controllers/dto"
+	"web-api/src/models"
 	"web-api/utils/constant"
 
 	"github.com/anthonycorbacho/slack-webhook"
@@ -10,7 +10,7 @@ import (
 
 type TestAPI struct{}
 
-func (slacktest *TestAPI) TestMessageForSlack(testslack dto2.TestSlackMessage) (string, error) {
+func (slacktest *TestAPI) TestMessageForSlack(testslack models.TestSlackMessage) (string, error) {
 
 	IntegrationName := testslack.IntegrationName
 	HookUrl := testslack.HookUrl

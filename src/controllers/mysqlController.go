@@ -3,7 +3,7 @@ package controllers
 import (
 	"fmt"
 	"net/http"
-	"web-api/src/controllers/dto"
+	"web-api/src/models"
 	service "web-api/src/service"
 
 	"github.com/gin-gonic/gin"
@@ -11,9 +11,10 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+/****API FOR TESTING THE WEBHOOK URL TO SEND TEST MESSAGE TO SLACK****/
 func MessageSlack(c *gin.Context) {
 	fmt.Printf("Runnning Inside controller")
-	reqDto := dto.TestSlackMessage{}
+	reqDto := models.TestSlackMessage{}
 	if c.ShouldBind(&reqDto) == nil {
 		log.Info().Msg("binding successful for params")
 	}

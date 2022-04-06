@@ -15,7 +15,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-//var validToken types.Object
 var configFilePath *string
 var log *zerolog.Logger = applogger.GetInstance()
 
