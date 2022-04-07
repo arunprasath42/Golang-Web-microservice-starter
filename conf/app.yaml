@@ -11,7 +11,7 @@ application:
 logging:
   level: DEBUG
 
-#MYSQL Crendentials
+#MYSQL Crendentials NOTE: THIS HAS TO BE MODIFIED BASED ON THE USERS 
 mysql:
   user : "root"
   password : "P@ssword123"

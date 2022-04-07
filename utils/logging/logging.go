@@ -5,7 +5,6 @@ import (
 	"os"
 	"path"
 	"sync"
-
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"gopkg.in/natefinch/lumberjack.v2"

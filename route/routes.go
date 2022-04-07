@@ -2,7 +2,6 @@ package route
 
 import (
 	"web-api/src/controllers"
-
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 )

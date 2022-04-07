@@ -2,11 +2,8 @@ package database
 
 import (
 	"fmt"
-
 	"github.com/spf13/viper"
-
 	"sync"
-
 	"github.com/rs/zerolog/log"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

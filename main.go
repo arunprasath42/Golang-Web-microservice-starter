@@ -31,10 +31,9 @@ func main() {
 
 }
 
-// loadConfig - Load the config parameters
+/***loadConfig - Load the config parameters from the conf/app.yaml***/
 func loadConfig() {
 	configFilePath = flag.String("config-path", "conf/", "conf/")
-
 	viper.SetConfigName("app")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(*configFilePath)
