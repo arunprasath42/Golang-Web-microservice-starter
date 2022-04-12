@@ -6,12 +6,7 @@ import (
 	"web-api/src/controllers/mocks"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 )
-
-type MockUserService struct {
-	mock.Mock
-}
 
 type ReadUserMock struct {
 	Name     string `default:"Arunprasath"`
