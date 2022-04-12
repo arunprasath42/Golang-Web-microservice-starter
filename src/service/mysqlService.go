@@ -3,14 +3,15 @@ package service
 import (
 	"fmt"
 	"web-api/src/models"
+
 	"web-api/utils/constant"
 
 	"github.com/anthonycorbacho/slack-webhook"
 )
 
-type TestAPI struct{}
+type TestSlackAPI struct{}
 
-func (slacktest *TestAPI) TestMessageForSlack(testslack models.TestSlackMessage) (string, error) {
+func (slacktest *TestSlackAPI) TestMessageForSlack(testslack models.TestSlackMessage) (string, error) {
 
 	IntegrationName := testslack.IntegrationName
 	HookUrl := testslack.HookUrl

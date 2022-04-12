@@ -13,7 +13,10 @@ func SetupRoutes(router *gin.Engine) {
 	api := router.Group("/MocktestAPI")
 
 	/***ADD THE ROUTES HERE***/
-	api.POST("/sendTestMessageToSlack", controllers.MessageSlack)
+	api.POST("/saveUsers", controllers.CreateUsers)
+	api.GET("/fetchUsers", controllers.FetchUsers)
+	api.PUT("/UpdateUsers", controllers.EditUsers)
+	api.POST("/deleteUsers", controllers.DropFilters)
 
 	router.Run(viper.GetString("server.port"))
 }

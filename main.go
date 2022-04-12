@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"web-api/route"
 	"web-api/utils/database"
@@ -23,6 +22,7 @@ func main() {
 	router := gin.Default()
 	setupLogger(router)
 	database.GetInstancemysql()
+	//migration.Migration()
 	router.Use(middleware.TracingMiddleware())
 	corsConfig := cors.DefaultConfig()
 	corsConfig.AllowAllOrigins = true
@@ -33,11 +33,9 @@ func main() {
 
 // loadConfig - Load the config parameters
 func loadConfig() {
-	configFilePath = flag.String("config-path", "conf/", "conf/")
-
 	viper.SetConfigName("app")
 	viper.SetConfigType("yaml")
-	viper.AddConfigPath(*configFilePath)
+	viper.AddConfigPath(".")
 	if err := viper.ReadInConfig(); err != nil {
 		if readErr, ok := err.(viper.ConfigFileNotFoundError); ok {
 			log.Error()
