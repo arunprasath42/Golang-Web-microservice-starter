@@ -11,8 +11,8 @@ Web API to expose services
 This project follows MVC pattern, except the View. The source code related the web application is present inside `src` folder and follows the folder structure of a Java Spring based application.
 
 # Structure-
-    .
-    |──config/
+        .
+        |──config/
         |  ├──config.go
         ├──migration/
         |  ├──migration.go
