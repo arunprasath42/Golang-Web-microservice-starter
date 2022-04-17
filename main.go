@@ -1,57 +1,34 @@
 package main
 
 import (
-	"fmt"
 	"web-api/route"
+	"web-api/src/repository"
 	"web-api/utils/database"
-	applogger "web-api/utils/logging"
 	"web-api/utils/middleware"
+	"web-api/utils/validator"
+
+	config "web-api/config"
+	"web-api/migration"
+	logger "web-api/utils/logging"
 
 	"github.com/gin-contrib/cors"
-	"github.com/gin-contrib/logger"
 	"github.com/gin-gonic/gin"
-	"github.com/rs/zerolog"
-	"github.com/spf13/viper"
 )
 
-var configFilePath *string
-var log *zerolog.Logger = applogger.GetInstance()
+//var log *zerolog.Logger = applogger.GetInstance()
 
 func main() {
-	loadConfig()
+	config.LoadConfig()
 	router := gin.Default()
-	setupLogger(router)
+	logger.SetupLogger(router)
 	database.GetInstancemysql()
-	//migration.Migration()
+	migration.Migration()
+	repository.MySqlInit()
+	validator.Init()
 	router.Use(middleware.TracingMiddleware())
 	corsConfig := cors.DefaultConfig()
 	corsConfig.AllowAllOrigins = true
 	router.Use(cors.New(corsConfig))
 	route.SetupRoutes(router)
 
-}
-
-// loadConfig - Load the config parameters
-func loadConfig() {
-	viper.SetConfigName("app")
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath(".")
-	if err := viper.ReadInConfig(); err != nil {
-		if readErr, ok := err.(viper.ConfigFileNotFoundError); ok {
-			log.Error()
-			fmt.Println(readErr)
-		} else {
-			log.Error()
-		}
-	}
-}
-
-// setupLogger - Configure logging for the server
-func setupLogger(r *gin.Engine) {
-	// Configure logger
-	zerologger := applogger.GetInstance()
-	r.Use(logger.SetLogger(logger.Config{
-		Logger: zerologger,
-		UTC:    true,
-	}))
 }

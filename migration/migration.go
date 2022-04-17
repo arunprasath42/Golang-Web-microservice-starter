@@ -1,9 +1,9 @@
 package migration
 
-//import "web-api/src/models"
+import "web-api/src/models"
 
 /****DB migration to be added***/
 
-/*func Migration() {
+func Migration() {
 	models.UserMigrate()
-}*/
+}

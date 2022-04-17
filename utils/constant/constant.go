@@ -1,11 +1,17 @@
 package constant
 
-import "regexp"
-
 var (
-	TestTextForSlack = "Test message Please ignore !!"
-	UserNameForSlack = "Accuknox"
-	Alphabets        = regexp.MustCompile(`^[a-zA-Z]+$`).MatchString
-	Digits           = regexp.MustCompile(`^[0-9]+$`).MatchString
-	Email            = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$").MatchString
+	SUCESS               = 200
+	BADREQUEST           = 400
+	UNAUTHORIZED         = 401
+	FORBIDDEN            = 403
+	NOTFOUND             = 404
+	METHODNOTALLOWED     = 405
+	INTERNALSERVERERROR  = 500
+	NOTIMPLEMENTED       = 501
+	BADGATEWAY           = 502
+	SERVICEUNAVAILABLE   = 503
+	GATEWAYTIMEOUT       = 504
+	UNSUPPORTEDMEDIATYPE = 415
+	UNPROCESSABLEENTITY  = 422
 )

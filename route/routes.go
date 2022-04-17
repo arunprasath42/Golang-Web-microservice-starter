@@ -1,7 +1,7 @@
 package route
 
 import (
-	"web-api/src/controllers"
+	controllers "web-api/src/controllers"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
@@ -14,9 +14,9 @@ func SetupRoutes(router *gin.Engine) {
 
 	/***ADD THE ROUTES HERE***/
 	api.POST("/saveUsers", controllers.CreateUsers)
-	api.GET("/fetchUsers", controllers.FetchUsers)
-	api.PUT("/UpdateUsers", controllers.EditUsers)
-	api.POST("/deleteUsers", controllers.DropFilters)
+	api.GET("/readUsers", controllers.ReadUsers)
+	api.PUT("/updateUsers", controllers.UpdateUsers)
+	api.DELETE("/deleteUsers", controllers.DeleteUsers)
 
 	router.Run(viper.GetString("server.port"))
 }

@@ -7,14 +7,17 @@ application:
   name: WebAPI
   doc: http://localhost:8080
 
-
 logging:
   level: DEBUG
 
-#MYSQL Crendentials
+#Note: Please change the credentials according to your connection
+#MYSQL Crendentials 
 mysql:
   user : "root"
   password : "P@ssword123"
   host: "127.0.0.1"
   port : "3306"
-  dbname : "ALERTS"
+  dbname : "DEMO"
+
+logging:
+  level: DEBUG
