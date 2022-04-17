@@ -6,6 +6,8 @@ import (
 	"path"
 	"sync"
 
+	"github.com/gin-contrib/logger"
+	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"gopkg.in/natefinch/lumberjack.v2"
@@ -93,4 +95,13 @@ func GetInstance() *zerolog.Logger {
 		customLogger = configure(config)
 	})
 	return customLogger
+}
+
+// setupLogger - Configure logging for the server
+func SetupLogger(r *gin.Engine) {
+	zerologger := GetInstance()
+	r.Use(logger.SetLogger(logger.Config{
+		Logger: zerologger,
+		UTC:    true,
+	}))
 }

@@ -1,7 +1,7 @@
 package route
 
 import (
-	controllers2 "web-api/src/controllers"
+	controllers "web-api/src/controllers"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
@@ -9,10 +9,14 @@ import (
 
 func SetupRoutes(router *gin.Engine) {
 
-	api := router.Group(viper.GetString("server.basepath"))
+	/***BASEPATH OF AN API. NOTE:THIS SHOULDN'T BE CHANGED***/
+	api := router.Group("/MocktestAPI")
 
-	//api.POST(viper.GetString("server.jiraAuthAPI"), controllers2.JiraAuthenticate)
-	api.POST(viper.GetString("server.slacktestmessageAPI"), controllers2.MessageSlack)
+	/***ADD THE ROUTES HERE***/
+	api.POST("/saveUsers", controllers.CreateUsers)
+	api.GET("/readUsers", controllers.ReadUsers)
+	api.PUT("/updateUsers", controllers.UpdateUsers)
+	api.DELETE("/deleteUsers", controllers.DeleteUsers)
 
 	router.Run(viper.GetString("server.port"))
 }
