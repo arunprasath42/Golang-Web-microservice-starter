@@ -2,6 +2,7 @@ package database
 
 import (
 	"fmt"
+	"web-api/utils/logging"
 
 	"github.com/spf13/viper"
 
@@ -40,7 +41,7 @@ func GetInstancemysql() (dba *gorm.DB) {
 		sqlDB.SetMaxIdleConns(2)
 		sqlDB.SetMaxOpenConns(10)
 		//defer sqlDB.Close()
-
+		logging.Logger.Info("Database connected successfully...")
 		log.Info().Msgf("Successfully established connection to %s:%s/%s", host, port, dbname)
 
 	})

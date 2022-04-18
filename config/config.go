@@ -3,13 +3,12 @@ package config
 import (
 	"fmt"
 
-	applogger "web-api/utils/logging"
+	//applogger "web-api/utils/logging"
 
-	"github.com/rs/zerolog"
+	//"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
 )
-
-var log *zerolog.Logger = applogger.GetInstance()
 
 func LoadConfig() {
 	viper.SetConfigName("app")
