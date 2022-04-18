@@ -13,14 +13,13 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 )
-
-//var log *zerolog.Logger = applogger.GetInstance()
 
 func main() {
 	config.LoadConfig()
 	router := gin.Default()
-	logger.SetupLogger(router)
+	logger.NewLogger(viper.GetString("logging.level"))
 	database.GetInstancemysql()
 	migration.Migration()
 	repository.MySqlInit()
