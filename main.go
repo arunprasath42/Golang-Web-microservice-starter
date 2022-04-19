@@ -1,15 +1,15 @@
 package main
 
 import (
-	"web-api/route"
-	"web-api/src/repository"
-	"web-api/utils/database"
-	"web-api/utils/middleware"
-	"web-api/utils/validator"
+	"sondr-backend/route"
+	"sondr-backend/src/repository"
+	"sondr-backend/utils/database"
+	"sondr-backend/utils/middleware"
+	"sondr-backend/utils/validator"
 
-	config "web-api/config"
-	"web-api/migration"
-	logger "web-api/utils/logging"
+	config "sondr-backend/config"
+	"sondr-backend/migration"
+	logger "sondr-backend/utils/logging"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"

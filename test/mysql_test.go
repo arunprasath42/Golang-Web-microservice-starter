@@ -3,11 +3,11 @@ package test
 import (
 	"fmt"
 	"log"
+	"sondr-backend/src/models"
+	"sondr-backend/src/repository"
+	"sondr-backend/src/service"
+	"sondr-backend/utils/database"
 	"testing"
-	"web-api/src/models"
-	"web-api/src/repository"
-	"web-api/src/service"
-	"web-api/utils/database"
 
 	"github.com/spf13/viper"
 )

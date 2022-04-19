@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
+	"unicode"
 
 	validator "github.com/go-playground/validator/v10"
 )
@@ -40,4 +41,35 @@ func getType(myvar interface{}) string {
 	} else {
 		return t.Name()
 	}
+}
+
+/***ValidatePasswordString - validates input password string bases on the following constraints***/
+func validatePasswordString(str string) bool {
+	var (
+		hasMinLen  = false
+		hasMaxLen  = false
+		hasUpper   = false
+		hasLower   = false
+		hasNumber  = false
+		hasSpecial = false
+	)
+	if len(str) >= 8 {
+		hasMinLen = true
+	}
+	if len(str) <= 48 {
+		hasMaxLen = true
+	}
+	for _, ch := range str {
+		switch {
+		case unicode.IsUpper(ch):
+			hasUpper = true
+		case unicode.IsLower(ch):
+			hasLower = true
+		case unicode.IsNumber(ch):
+			hasNumber = true
+		case unicode.IsPunct(ch) || unicode.IsSymbol(ch):
+			hasSpecial = true
+		}
+	}
+	return hasMinLen && hasMaxLen && hasUpper && hasLower && hasNumber && hasSpecial
 }

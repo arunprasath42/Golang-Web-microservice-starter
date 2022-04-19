@@ -2,15 +2,12 @@ package database
 
 import (
 	"fmt"
-	"web-api/utils/logging"
-
-	"github.com/spf13/viper"
-
+	"sondr-backend/utils/logging"
 	"sync"
 
-	"github.com/rs/zerolog/log"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"github.com/spf13/viper"
 )
 
 var once sync.Once
@@ -19,32 +16,18 @@ var DB *gorm.DB
 //Conn connects to Database
 func GetInstancemysql() (dba *gorm.DB) {
 	once.Do(func() {
-		user := viper.GetString("mysql.user")
-		password := viper.GetString("mysql.password")
-		host := viper.GetString("mysql.host")
-		port := viper.GetString("mysql.port")
-		dbname := viper.GetString("mysql.dbname")
-
-		dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", user, password, host, port, dbname)
-		db, err := gorm.Open(mysql.Open(dsn+"?parseTime=true"), &gorm.Config{})
-		//close connection - cleanup and close
-		dba = db
+		var mysqlHost = fmt.Sprint(viper.GetString("mysql.user"), ":", viper.GetString("mysql.password"), "@(", viper.GetString("mysql.host"), ")/", viper.GetString("mysql.dbname"), "?parseTime=true")
+		db, err := gorm.Open("mysql", mysqlHost)
 		if err != nil {
-			log.Panic().Msgf("Error connecting to the database at %s:%s/%s", host, port, dbname)
-			log.Info().Msgf("%s:%s@tcp(%s:%s)/%s", user, password, host, port, dbname)
+			logging.Logger.WithError(err).WithField("err", err).Errorf("Database not connected")
+			panic(err)
 		}
-
-		sqlDB, err := dba.DB()
-		if err != nil {
-			log.Panic().Msgf("Error getting GORM DB definition")
-		}
-		sqlDB.SetMaxIdleConns(2)
-		sqlDB.SetMaxOpenConns(10)
-		//defer sqlDB.Close()
+		DB = db
+		DB.DB().SetMaxIdleConns(10)
+		DB.DB().SetMaxOpenConns(40)
 		logging.Logger.Info("Database connected successfully...")
-		log.Info().Msgf("Successfully established connection to %s:%s/%s", host, port, dbname)
 
 	})
-	DB = dba
-	return dba
+
+	return DB
 }

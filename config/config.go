@@ -3,9 +3,6 @@ package config
 import (
 	"fmt"
 
-	//applogger "web-api/utils/logging"
-
-	//"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
 )

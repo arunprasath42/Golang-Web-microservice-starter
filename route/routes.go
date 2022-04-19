@@ -18,5 +18,9 @@ func SetupRoutes(router *gin.Engine) {
 	api.PUT("/updateUsers", controllers.UpdateUsers)
 	api.DELETE("/deleteUsers", controllers.DeleteUsers)
 
+	/***ADD THE ADMIN ROUTES***/
+	api.POST("/createSubadmin", controllers.CreateSubadmin)
+	api.POST("/generatePassword", controllers.GeneratePassword)
+
 	router.Run(viper.GetString("server.port"))
 }

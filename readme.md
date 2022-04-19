@@ -23,7 +23,7 @@ This project follows MVC pattern, except the View. The source code related the w
         |  ├──models
         |  ├──repository
         |  ├──service
-        |  test/
+        ├──test/
         |  ├──service_test.go
         ├──utils/
         |  ├──constant

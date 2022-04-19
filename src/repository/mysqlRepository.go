@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"web-api/utils/database"
+	"sondr-backend/utils/database"
 )
 
 var Repo MysqlRepository
