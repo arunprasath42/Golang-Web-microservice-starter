@@ -1,6 +1,6 @@
 package migration
 
-import "web-api/src/models"
+import "sondr-backend/src/models"
 
 /****DB migration to be added***/
 

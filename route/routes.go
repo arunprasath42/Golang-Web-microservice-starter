@@ -1,7 +1,7 @@
 package route
 
 import (
-	controllers "web-api/src/controllers"
+	controllers "sondr-backend/src/controllers"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
