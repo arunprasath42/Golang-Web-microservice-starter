@@ -13,10 +13,10 @@ func SetupRoutes(router *gin.Engine) {
 	api := router.Group("/MocktestAPI")
 
 	/***ADD THE ROUTES HERE***/
-	api.POST("/saveUsers", controllers.CreateUsers)
-	api.GET("/readUsers", controllers.ReadUsers)
-	api.PUT("/updateUsers", controllers.UpdateUsers)
-	api.DELETE("/deleteUsers", controllers.DeleteUsers)
+	// api.POST("/saveUsers", controllers.CreateUsers)
+	// api.GET("/readUsers", controllers.ReadUsers)
+	// api.PUT("/updateUsers", controllers.UpdateUsers)
+	// api.DELETE("/deleteUsers", controllers.DeleteUsers)
 
 	/***ADD THE ADMIN ROUTES***/
 	api.POST("/createSubadmin", controllers.CreateSubadmin)
@@ -24,9 +24,9 @@ func SetupRoutes(router *gin.Engine) {
 	api.POST("/login", controllers.Login)
 	api.GET("/readSubadmin", controllers.ListSubAdmins)
 	api.GET("/fetchAdmindetails", controllers.ReadSubAdmin)
-	api.PUT("/updateSubadmin", controllers.UpdateSubAdmin)
-	api.GET("/verifyPassword", controllers.VerifyPassword)
-	api.PUT("/changePassword", controllers.ChangePassword)
+	// api.PUT("/updateSubadmin", controllers.UpdateSubAdmin)
+	// api.GET("/verifyPassword", controllers.VerifyPassword)
+	// api.PUT("/changePassword", controllers.ChangePassword)
 
 	router.Run(viper.GetString("server.port"))
 }

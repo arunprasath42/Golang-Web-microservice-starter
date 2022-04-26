@@ -16,8 +16,16 @@ import (
 )
 
 /*******************************CREATING SUB-ADMINS**********************************/
+
 func CreateSubadmin(c *gin.Context) {
-	reqModel := models.Admin{}
+
+	// role := c.GetString("role")
+	// if role != "Subadmin" {
+	// 	c.JSON(http.StatusBadRequest, response.ErrorMessage(constant.BADREQUEST, errors.New("Permission Denied")))
+	// 	return
+	// }
+
+	reqModel := models.Admins{}
 	if err := c.ShouldBind(&reqModel); err != nil {
 		c.JSON(http.StatusBadRequest, response.ErrorMessage(constant.BADREQUEST, err))
 		return
@@ -52,7 +60,7 @@ func GeneratePassword(c *gin.Context) {
 
 /*********************************LOGIN*********************************************/
 func Login(c *gin.Context) {
-	reqModel := models.Admins{}
+	reqModel := models.Request{}
 	if err := c.ShouldBind(&reqModel); err != nil {
 		c.JSON(http.StatusBadRequest, response.ErrorMessage(constant.BADREQUEST, err))
 		return
@@ -75,13 +83,13 @@ func Login(c *gin.Context) {
 
 /*********************************LISTING SUBADMINS*********************************************/
 func ListSubAdmins(c *gin.Context) {
-	pageNo, pageSize, err := val.GetPageNoandPageSize(c.Request.URL.Query())
-	if err != nil {
+	reqModel := &models.Request{}
+	if err := c.ShouldBindQuery(&reqModel); err != nil {
 		c.JSON(http.StatusBadRequest, response.ErrorMessage(constant.BADREQUEST, err))
 		return
 	}
 	var service = service.TestAPIAdmin{}
-	Subadmin, err := service.ListSubAdmins(pageNo, pageSize)
+	Subadmin, err := service.ListSubAdmins(reqModel.PageNo, reqModel.PageSize, reqModel.SearchFilter)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.ErrorMessage(constant.INTERNALSERVERERROR, err))
 		return
@@ -130,17 +138,17 @@ func ListSubAdmins(c *gin.Context) {
 /*********************************READ SUBADMIN DETAILS*********************************************/
 func ReadSubAdmin(c *gin.Context) {
 
-	reqModel := &models.Admins{}
+	reqModel := &models.Request{}
 	if err := c.ShouldBindQuery(&reqModel); err != nil {
 		c.JSON(http.StatusBadRequest, response.ErrorMessage(constant.BADREQUEST, err))
 		return
 	}
-	// if err := val.ValidateVariable(reqModel.ID, "required", "unique_id"); err != nil {
-	// 	c.JSON(http.StatusBadRequest, response.ErrorMessage(constant.BADREQUEST, err))
-	// 	return
-	// }
+	if err := val.ValidateVariable(reqModel.ID, "required", "id"); err != nil {
+		c.JSON(http.StatusBadRequest, response.ErrorMessage(constant.BADREQUEST, err))
+		return
+	}
 	var service = service.TestAPIAdmin{}
-	readAdmins, err := service.ReadSubAdmin(reqModel)
+	readAdmins, err := service.ReadSubAdmin(reqModel.ID)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.ErrorMessage(constant.INTERNALSERVERERROR, err))
@@ -150,65 +158,65 @@ func ReadSubAdmin(c *gin.Context) {
 }
 
 /*********************************UPDATE SUBADMIN DETAILS*********************************************/
-func UpdateSubAdmin(c *gin.Context) {
-	reqModel := &models.Admins{}
-	if err := c.ShouldBind(&reqModel); err != nil {
-		c.JSON(http.StatusBadRequest, response.ErrorMessage(constant.BADREQUEST, err))
-		return
-	}
-	if err := val.ValidateVariable(reqModel.ID, "required", "id"); err != nil {
-		c.JSON(http.StatusBadRequest, response.ErrorMessage(constant.BADREQUEST, err))
-		return
-	}
-	var updateSubadmin = service.TestAPIAdmin{}
-	updated, err := updateSubadmin.UpdateSubAdmin(reqModel)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, response.ErrorMessage(constant.INTERNALSERVERERROR, err))
-		return
-	}
-	c.JSON(http.StatusOK, response.SuccessResponse(updated))
-}
+// func UpdateSubAdmin(c *gin.Context) {
+// 	reqModel := &models.Admins{}
+// 	if err := c.ShouldBind(&reqModel); err != nil {
+// 		c.JSON(http.StatusBadRequest, response.ErrorMessage(constant.BADREQUEST, err))
+// 		return
+// 	}
+// 	if err := val.ValidateVariable(reqModel.ID, "required", "id"); err != nil {
+// 		c.JSON(http.StatusBadRequest, response.ErrorMessage(constant.BADREQUEST, err))
+// 		return
+// 	}
+// 	var updateSubadmin = service.TestAPIAdmin{}
+// 	updated, err := updateSubadmin.UpdateSubAdmin(reqModel)
+// 	if err != nil {
+// 		c.JSON(http.StatusInternalServerError, response.ErrorMessage(constant.INTERNALSERVERERROR, err))
+// 		return
+// 	}
+// 	c.JSON(http.StatusOK, response.SuccessResponse(updated))
+// }
 
-/******************************VERIFY PASSWORD*********************************************/
-func VerifyPassword(c *gin.Context) {
-	reqModel := models.Admins{}
-	if err := c.ShouldBindQuery(&reqModel); err != nil {
-		c.JSON(http.StatusBadRequest, response.ErrorMessage(constant.BADREQUEST, err))
-		return
-	}
-	if err := val.Validate(reqModel); err != nil {
-		c.JSON(http.StatusBadRequest, response.ErrorMessage(constant.BADREQUEST, err))
-		return
-	}
-	var service = service.TestAPIAdmin{}
-	saved, err := service.VerifyPassword(&reqModel)
-	if err != nil {
-		log.Error().Msgf("Unable to Verify: %s", err.Error())
-		c.JSON(http.StatusInternalServerError, response.ErrorMessage(constant.INTERNALSERVERERROR, err))
-		return
-	}
-	log.Info().Msgf("Verify sucessfull: %s", saved)
-	c.JSON(http.StatusOK, response.SuccessResponse(saved))
-}
+// /******************************VERIFY PASSWORD*********************************************/
+// func VerifyPassword(c *gin.Context) {
+// 	reqModel := models.Admins{}
+// 	if err := c.ShouldBindQuery(&reqModel); err != nil {
+// 		c.JSON(http.StatusBadRequest, response.ErrorMessage(constant.BADREQUEST, err))
+// 		return
+// 	}
+// 	if err := val.Validate(reqModel); err != nil {
+// 		c.JSON(http.StatusBadRequest, response.ErrorMessage(constant.BADREQUEST, err))
+// 		return
+// 	}
+// 	var service = service.TestAPIAdmin{}
+// 	saved, err := service.VerifyPassword(&reqModel)
+// 	if err != nil {
+// 		log.Error().Msgf("Unable to Verify: %s", err.Error())
+// 		c.JSON(http.StatusInternalServerError, response.ErrorMessage(constant.INTERNALSERVERERROR, err))
+// 		return
+// 	}
+// 	log.Info().Msgf("Verify sucessfull: %s", saved)
+// 	c.JSON(http.StatusOK, response.SuccessResponse(saved))
+// }
 
-/*********************************CHANGE PASSWORD*********************************************/
+// /*********************************CHANGE PASSWORD*********************************************/
 
-func ChangePassword(c *gin.Context) {
-	reqModel := &models.Admins{}
+// func ChangePassword(c *gin.Context) {
+// 	reqModel := &models.Admins{}
 
-	if err := c.ShouldBind(&reqModel); err != nil {
-		c.JSON(http.StatusBadRequest, response.ErrorMessage(constant.BADREQUEST, err))
-		return
-	}
-	if err := val.Validate(reqModel); err != nil {
-		c.JSON(http.StatusBadRequest, response.ErrorMessage(constant.BADREQUEST, err))
-		return
-	}
-	var service = service.TestAPIAdmin{}
-	changePassword, err := service.ChangePassword(reqModel)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, response.ErrorMessage(constant.INTERNALSERVERERROR, err))
-		return
-	}
-	c.JSON(http.StatusOK, response.SuccessResponse(changePassword))
-}
+// 	if err := c.ShouldBind(&reqModel); err != nil {
+// 		c.JSON(http.StatusBadRequest, response.ErrorMessage(constant.BADREQUEST, err))
+// 		return
+// 	}
+// 	if err := val.Validate(reqModel); err != nil {
+// 		c.JSON(http.StatusBadRequest, response.ErrorMessage(constant.BADREQUEST, err))
+// 		return
+// 	}
+// 	var service = service.TestAPIAdmin{}
+// 	changePassword, err := service.ChangePassword(reqModel)
+// 	if err != nil {
+// 		c.JSON(http.StatusInternalServerError, response.ErrorMessage(constant.INTERNALSERVERERROR, err))
+// 		return
+// 	}
+// 	c.JSON(http.StatusOK, response.SuccessResponse(changePassword))
+// }

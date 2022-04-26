@@ -1,27 +1,32 @@
 package service
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"sondr-backend/src/models"
 	"sondr-backend/src/repository"
 
+	"github.com/dgrijalva/jwt-go"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/sethvargo/go-password/password"
+	"github.com/spf13/viper"
 	"golang.org/x/crypto/bcrypt"
 	//"gorm.io/gorm"
 )
 
 /*******************************CREATING SUB-ADMINS**********************************/
-func (c *TestAPIAdmin) CreateSubadmin(insert *models.Admin) (string, error) {
+func (c *TestAPIAdmin) CreateSubadmin(insert *models.Admins) (*models.Admins, error) {
 	password, _ := bcrypt.GenerateFromPassword([]byte(insert.Password), 4)
 	insert.Password = string(password)
-
+	if insert.Role == "" {
+		insert.Role = "SubAdmin"
+	}
 	if err := repository.Repo.Insert(insert); err != nil {
-		return "Unable to create Sub-admin", err
+		return nil, err
 	}
 
-	return "Sub Admin created successfully", nil
+	return insert, nil
 }
 
 /******************************GENARATE PASSWORD MANUALLY***************************/
@@ -34,31 +39,59 @@ func (c *TestAPIAdmin) GeneratePassword() (string, error) {
 }
 
 /*********************************LOGIN*********************************************/
-func (r *TestAPIAdmin) Login(req *models.Admins) (string, error) {
+func (r *TestAPIAdmin) Login(req *models.Request) (string, error) {
 	obj := models.Admins{}
 	whereQuery := "email = ?"
-	if err := repository.Repo.Find(&obj, whereQuery, req.Email); err != nil {
+	if err := repository.Repo.Find(&obj, "admins", "", whereQuery, req.Email); err != nil {
 		fmt.Println("Login failed")
-		return "Login Failed. Please enter correct Email and Password", err
+		return "", errors.New("Invalid creditional")
 	}
-	var password_tes = bcrypt.CompareHashAndPassword([]byte(obj.Password), []byte(req.Password))
-	if password_tes == nil {
-		fmt.Println("Login success")
-		return "Login Success", nil
-	} else {
-		return "Login Failed", nil
+	err := bcrypt.CompareHashAndPassword([]byte(obj.Password), []byte(req.Password))
+	if err != nil {
+		return "", errors.New("Invalid Creditional")
 	}
+	return GenrateToken(&obj)
+
+}
+
+func GenrateToken(admin *models.Admins) (string, error) {
+	var mySigningKey = []byte(viper.GetString("secret.Key"))
+	token := jwt.New(jwt.SigningMethodHS256)
+	claims := token.Claims.(jwt.MapClaims)
+
+	claims["authorized"] = true
+	claims["email"] = admin.Email
+	claims["role"] = admin.Role
+	claims["password"] = admin.Password
+
+	tokenString, err := token.SignedString(mySigningKey)
+
+	if err != nil {
+		fmt.Errorf("Something Went Wrong: %s", err.Error())
+		return "", err
+	}
+	return tokenString, nil
 }
 
 /*********************************LISTING SUBADMINS*********************************************/
 
-func (r *TestAPIAdmin) ListSubAdmins(pageNo int, pageSize int) (*models.AdminResponse, error) {
+func (r *TestAPIAdmin) ListSubAdmins(pageNo int, pageSize int, search string) (*models.AdminResponse, error) {
 	var admin []*models.ListAdmin
 	var resp models.AdminResponse
+	var whereQuery string
+	var searchFilter interface{}
+	if pageSize == 0 {
+		pageSize = 10
+	}
+
 	selectQuery := "admins.id, admins.name, admins.email, admins.password, admins.created_at"
-	joinsQuery := ""
+
+	if search != "" {
+		whereQuery = "admins.id like ? or admins.name like ?"
+		searchFilter = "%" + search + "%"
+	}
 	var count int
-	count, err := repository.Repo.ListAllWithPagination(&admin, selectQuery, "admins", joinsQuery, pageNo, pageSize)
+	count, err := repository.Repo.ListAllWithPagination(&admin, selectQuery, "admins", "", pageNo, pageSize, whereQuery, searchFilter)
 	if err != nil {
 		return nil, err
 	}
@@ -85,13 +118,14 @@ func (r *TestAPIAdmin) ListSubAdmins(pageNo int, pageSize int) (*models.AdminRes
 }*/
 
 /*********************************READ SUBADMIN DETAILS*********************************************/
-func (c *TestAPIAdmin) ReadSubAdmin(read *models.Admins) (*models.Admins, error) {
+func (c *TestAPIAdmin) ReadSubAdmin(id uint) (*models.ListAdmin, error) {
 	//obj := models.Admins{}
-	var admin models.Admins
-	whereQuery := "id = ? AND email = ?"
+	var admin models.ListAdmin
+	whereQuery := "id = ?"
 
+	selectQuery := "admins.name,admins.email,admins.id"
 	//var password_tes = bcrypt.
-	if err := repository.Repo.Find(&admin, whereQuery, read.ID, read.Email); err != nil {
+	if err := repository.Repo.Find(&admin, "admins", selectQuery, whereQuery, id); err != nil {
 		return nil, err
 	}
 	return &admin, nil
@@ -111,7 +145,7 @@ func (c *TestAPIAdmin) ReadSubAdmin(read *models.Admins) (*models.Admins, error)
 }*/
 
 /*********************************UPDATE SUBADMIN DETAILS*********************************************/
-func (c *TestAPIAdmin) UpdateSubAdmin(update *models.Admins) (string, error) {
+func (c *TestAPIAdmin) UpdateSubAdmin(update *models.Admin) (string, error) {
 	val := repository.Repo.UpdateSubAdmin(&models.Admins{}, update.ID, update)
 	if val.RowsAffected > 0 {
 		return "Update successfull", nil
@@ -128,35 +162,35 @@ func (c *TestAPIAdmin) UpdateSubAdmin(update *models.Admins) (string, error) {
 
 /*********************************Verify Password*********************************************/
 
-func (c *TestAPIAdmin) VerifyPassword(req *models.Admins) (string, error) {
-	obj := models.Admins{}
-	whereQuery := "id = ?"
-	if err := repository.Repo.Find(&obj, whereQuery, req.ID); err != nil {
-		return "Login Failed. Please enter correct Email and Password", err
-	}
+// func (c *TestAPIAdmin) VerifyPassword(req *models.Admins) (string, error) {
+// 	obj := models.Admins{}
+// 	whereQuery := "id = ?"
+// 	if err := repository.Repo.Find(&obj, "", whereQuery, req.ID); err != nil {
+// 		return "Login Failed. Please enter correct Email and Password", err
+// 	}
 
-	if req.Password == obj.Password {
-		return "Verification Successfull", nil
-	} else if req.Password == "" {
-		return "Please enter the  current password to verify", nil
-	} else {
-		return "Verification failed. Incorrect password", nil
-	}
-}
+// 	if req.Password == obj.Password {
+// 		return "Verification Successfull", nil
+// 	} else if req.Password == "" {
+// 		return "Please enter the  current password to verify", nil
+// 	} else {
+// 		return "Verification failed. Incorrect password", nil
+// 	}
+// }
 
-/*********************************CHANGE PASSWORD*********************************************/
+// /*********************************CHANGE PASSWORD*********************************************/
 
-func (c *TestAPIAdmin) ChangePassword(req *models.Admins) (string, error) {
-	obj := models.Admins{}
-	whereQuery := "id = ?"
-	if err := repository.Repo.Find(&obj, whereQuery, req.ID); err != nil {
-		return "Unable to change password", err
-	}
-	if req.Password == obj.Password {
-		return "Current password and new password should not be same", nil
-	}
-	if err := repository.Repo.UpdateSubAdmin(&models.Admins{}, req.ID, obj); err != nil {
-		return "Unable to change password", nil
-	}
-	return "Password changed successfully", nil
-}
+// func (c *TestAPIAdmin) ChangePassword(req *models.Admin) (string, error) {
+// 	obj := models.Admins{}
+// 	whereQuery := "id = ?"
+// 	if err := repository.Repo.Find(&obj, "", whereQuery, req.ID); err != nil {
+// 		return "Unable to change password", err
+// 	}
+// 	if req.Password == obj.Password {
+// 		return "Current password and new password should not be same", nil
+// 	}
+// 	if err := repository.Repo.UpdateSubAdmin(&models.Admins{}, req.ID, obj); err != nil {
+// 		return "Unable to change password", nil
+// 	}
+// 	return "Password changed successfully", nil
+// }

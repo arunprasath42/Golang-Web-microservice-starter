@@ -29,21 +29,36 @@ func (r *MySqlRepositoryRepo) Delete(obj interface{}, id int) error {
 	return nil
 }
 
-func (r *MySqlRepositoryRepo) Find(obj interface{}, whereQuery string, value ...interface{}) error {
-	if err := database.DB.Debug().Where(whereQuery, value...).Find(obj).Error; err != nil {
+func (r *MySqlRepositoryRepo) Find(obj interface{}, tableName string, selectQuery string, whereQuery string, value ...interface{}) error {
+	db := database.DB.Debug().Table(tableName)
+	if selectQuery != "" {
+		db.Select(selectQuery)
+	}
+	if err := db.Where(whereQuery, value...).Find(obj).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
 /***For Pagination***/
-func (r *MySqlRepositoryRepo) ListAllWithPagination(obj interface{}, selectQuery, tableName, joinsQuery string, pageno, pagesize int) (int, error) {
+func (r *MySqlRepositoryRepo) ListAllWithPagination(obj interface{}, selectQuery, tableName, joinsQuery string, pageno, pagesize int, whereQuery string, value ...interface{}) (int, error) {
 	var count int
 	var err error
 
 	offset := (pageno - 1) * pagesize
+	var res []interface{}
 
 	db := database.DB.Debug().Table(tableName)
+	if whereQuery != "" {
+		for _, val := range value {
+			if val != nil {
+				fmt.Println("value", val)
+				res = append(res, val)
+			}
+		}
+		db = db.Where(whereQuery, res...)
+
+	}
 	if selectQuery != "" {
 		db = db.Select(selectQuery)
 	}

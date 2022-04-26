@@ -9,12 +9,14 @@ application:
 
 logging:
   level: DEBUG
+secret:
+  Key: "Test"
 
 #Note: Please change the credentials according to your connection
 #MYSQL Crendentials 
 mysql:
   user : "root"
-  password : "P@ssword123"
+  password : "password"
   host: "127.0.0.1"
   port : "3306"
-  dbname : "demo"
+  dbname : "SondrApp"

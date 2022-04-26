@@ -4,7 +4,6 @@ import (
 	"sondr-backend/route"
 	"sondr-backend/src/repository"
 	"sondr-backend/utils/database"
-	"sondr-backend/utils/middleware"
 	"sondr-backend/utils/validator"
 
 	config "sondr-backend/config"
@@ -24,7 +23,7 @@ func main() {
 	migration.Migration()
 	repository.MySqlInit()
 	validator.Init()
-	router.Use(middleware.TracingMiddleware())
+	//router.Use(middleware.TracingMiddleware())
 	corsConfig := cors.DefaultConfig()
 	corsConfig.AllowAllOrigins = true
 	router.Use(cors.New(corsConfig))

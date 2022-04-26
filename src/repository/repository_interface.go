@@ -14,7 +14,7 @@ type MysqlRepository interface {
 	Delete(obj interface{}, id int) error
 	//CreateSubadmin(req *models.Admin) error // Admin Repository Interface
 	GetAdmin(obj interface{}, email string) error //Read Admin data from database
-	Find(obj interface{}, whereQuery string, value ...interface{}) error
-	ListAllWithPagination(obj interface{}, selectQuery, tableName, joinsQuery string, pageno, pagesize int) (int, error)
+	Find(obj interface{}, tableName string, selectQuery string, whereQuery string, value ...interface{}) error
+	ListAllWithPagination(obj interface{}, selectQuery, tableName, joinsQuery string, pageno, pagesize int, whereQuery string, value ...interface{}) (int, error)
 	UpdateSubAdmin(obj interface{}, id int, update interface{}) *gorm.DB
 }
