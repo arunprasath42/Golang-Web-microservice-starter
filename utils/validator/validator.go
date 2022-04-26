@@ -3,7 +3,9 @@ package validator
 import (
 	"errors"
 	"fmt"
+	"net/url"
 	"reflect"
+	"strconv"
 	"strings"
 	"unicode"
 
@@ -72,4 +74,28 @@ func validatePasswordString(str string) bool {
 		}
 	}
 	return hasMinLen && hasMaxLen && hasUpper && hasLower && hasNumber && hasSpecial
+}
+
+/***Pagination function to be used common for all the List API's***/
+func GetPageNoandPageSize(query url.Values) (no, size int, err error) {
+	pageNo := 1
+	pageSize := 10
+	pn := query.Get("pageNo")
+	ps := query.Get("pageSize")
+	if pn != "" {
+		no, err := strconv.Atoi(pn)
+		if err != nil {
+			return 0, 0, err
+		}
+		pageNo = no
+	}
+	if ps != "" {
+		sz, err := strconv.Atoi(ps)
+		if err != nil {
+			return 0, 0, err
+		}
+		pageSize = sz
+	}
+	return pageNo, pageSize, nil
+
 }

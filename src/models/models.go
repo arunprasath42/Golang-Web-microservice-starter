@@ -23,15 +23,49 @@ type Users struct {
 // 	Role     string    `gorm:"default:'Admin';type:enum('Admin','Subadmin')" json:"role,omitempty" validate:"required,in(Admin|Subadmin)"`
 // }
 
+func UserMigrate() {
+	db.DB.Debug().AutoMigrate(&Users{}, &Admin{})
+}
+
+type Admins struct {
+	ID       int    `json:"id"`
+	Name     string `json:"name,omitempty"`
+	Email    string `json:"email,omitempty"`
+	Password string `json:"password,omitempty"` //validatePasswordString:"password"`
+}
+
+type AdminEditprofile struct {
+	Name  string `json:"name" binding:"required"`
+	Email string `json:"email" binding:"required" validate:"email"`
+	ID    uint   `json:"uniqueID"`
+}
+
+/***TAble Name***/
 type Admin struct {
 	gorm.Model
 	Name     string    `gorm:"column:name;type:varchar(255);unique" json:"name" binding:"required"`
 	Email    string    `gorm:"column:email;type:varchar(255);unique" json:"email" binding:"required" validate:"email"`
 	Password string    `gorm:"column:password;type:varchar(255);unique" json:"password" binding:"required" validatePasswordString:"password"`
 	LastSeen time.Time `json:"last_seen"`
-	Role     string    `gorm:"default:'Admin';type:enum('Admin','Subadmin')" json:"role,omitempty"`
+	Role     string    `gorm:"default:'Subadmin';type:enum('Admin','Subadmin')" json:"role,omitempty"`
 }
 
-func UserMigrate() {
-	db.DB.Debug().AutoMigrate(&Users{}, &Admin{})
+type AdminResponse struct {
+	ListAdmin []*ListAdmin `json:"listAdmin,omitempty"`
+	Count     int          `json:"count,omitempty"`
+}
+
+/***For Listing admin table ***/
+type ListAdmin struct {
+	ID          int       `json:"id,omitempty"`
+	Name        string    `json:"name,omitempty"`
+	Email       string    `json:"email,omitempty"`
+	Password    string    `json:"password,omitempty"`
+	CreatedDate time.Time `json:"createdDate,omitempty"`
+}
+
+type AdminsPagination struct {
+	Name     string
+	PageID   int
+	PageSize int
 }

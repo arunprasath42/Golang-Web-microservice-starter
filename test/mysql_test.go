@@ -29,7 +29,7 @@ func TestValidCreateUsers(t *testing.T) {
 		Email:    "abc@gmail.com",
 		Location: "chennai",
 	}
-	s := service.TestAPIUsers{}
+	s := service.TestAPIAdmin{}
 	_, err := s.CreateUsers(&args)
 	if err != nil {
 		t.Error("not valid")
@@ -43,7 +43,7 @@ func TestInvalidCreateUsers(t *testing.T) {
 		Email:    "abc@gmail.com",
 		Location: "chennai",
 	}
-	s := service.TestAPIUsers{}
+	s := service.TestAPIAdmin{}
 	_, err := s.CreateUsers(&args)
 	if err == nil {
 		t.Error("not valid")

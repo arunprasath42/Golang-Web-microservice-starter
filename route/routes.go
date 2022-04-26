@@ -21,6 +21,12 @@ func SetupRoutes(router *gin.Engine) {
 	/***ADD THE ADMIN ROUTES***/
 	api.POST("/createSubadmin", controllers.CreateSubadmin)
 	api.POST("/generatePassword", controllers.GeneratePassword)
+	api.POST("/login", controllers.Login)
+	api.GET("/readSubadmin", controllers.ListSubAdmins)
+	api.GET("/fetchAdmindetails", controllers.ReadSubAdmin)
+	api.PUT("/updateSubadmin", controllers.UpdateSubAdmin)
+	api.GET("/verifyPassword", controllers.VerifyPassword)
+	api.PUT("/changePassword", controllers.ChangePassword)
 
 	router.Run(viper.GetString("server.port"))
 }

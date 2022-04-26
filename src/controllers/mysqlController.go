@@ -25,7 +25,7 @@ func CreateUsers(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, response.ErrorMessage(constant.BADREQUEST, err))
 		return
 	}
-	var service = service.TestAPIUsers{}
+	var service = service.TestAPIAdmin{}
 	saved, err := service.CreateUsers(&reqModel)
 	if err != nil {
 		log.Error().Msgf("Error inserting data into the database: %s", err.Error())
@@ -48,7 +48,7 @@ func ReadUsers(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, response.ErrorMessage(constant.BADREQUEST, err))
 		return
 	}
-	var service = service.TestAPIUsers{}
+	var service = service.TestAPIAdmin{}
 	readUsers, err := service.FetchUsers(reqModel)
 
 	if err != nil {
@@ -73,7 +73,7 @@ func UpdateUsers(c *gin.Context) {
 	// 	c.JSON(http.StatusBadRequest, response.ErrorMessage(constant.BADREQUEST, err))
 	// 	return
 	// }
-	var service = service.TestAPIUsers{}
+	var service = service.TestAPIAdmin{}
 	saved, err := service.UpdateUsers(reqModel)
 	if err != nil {
 		log.Error().Msgf("Error updating data into the database: %s", err.Error())
@@ -96,7 +96,7 @@ func DeleteUsers(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, response.ErrorMessage(constant.BADREQUEST, err))
 		return
 	}
-	var service = service.TestAPIUsers{}
+	var service = service.TestAPIAdmin{}
 	deleted, err := service.DeleteUsers(reqModel)
 	if err != nil {
 		log.Error().Msgf("Error deleting data from the database: %s", err.Error())

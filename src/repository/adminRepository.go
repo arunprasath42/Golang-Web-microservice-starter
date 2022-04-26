@@ -1,26 +1,55 @@
 package repository
 
 import (
-	"fmt"
-	"sondr-backend/src/models"
+	//"sondr-backend/src/models"
+
 	"sondr-backend/utils/database"
 
-	"golang.org/x/crypto/bcrypt"
+	"github.com/jinzhu/gorm"
 )
 
-func HashPassword(password string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
-	return string(bytes), err
+/***Inserting Sub admins to database***/
+// func (r *MySqlRepositoryRepo) (req *models.Admin) error {
+// 	if err := database.DB.Debug().Create(req).Error; err != nil {
+// 		return err
+// 	}
+// 	return nil
+// }
+var Repo MysqlRepository
+
+type MySqlRepositoryRepo struct{}
+
+func MySqlInit() {
+	Repo = &MySqlRepositoryRepo{}
 }
 
-/***Inserting data to database***/
-func (r *MySqlRepositoryRepo) CreateSubadmin(req *models.Admin) error {
-	Password, _ := HashPassword(req.Password)
-	fmt.Println(Password)
-
-	//HashPassword(req.Password)
-	//if err := database.DB.Debug().Select("Name", "Email", "Password").Create(insert).Error; err != nil
+/**********************Creating SUB ADMINS****************************/
+func (r *MySqlRepositoryRepo) Insert(req interface{}) error {
 	if err := database.DB.Debug().Create(req).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+/***********************Reading admin data from database**************************/
+func (r *MySqlRepositoryRepo) GetAdmin(obj interface{}, email string) error {
+	if err := database.DB.Debug().Where("email = ? ", email).Find(obj).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+/***********************Updating sub-admin******************/
+/*func (r *MySqlRepositoryRepo) UpdateSubAdmin(obj interface{}, id int, update interface{}) *gorm.DB {
+
+	if err := database.DB.Debug().Where("id IN (?) ", id).First(obj).Updates(update); err != nil {
+		return err
+	}
+	return nil
+}*/
+func (r *MySqlRepositoryRepo) UpdateSubAdmin(obj interface{}, id int, update interface{}) *gorm.DB {
+
+	if err := database.DB.Debug().Model(obj).Where("id IN (?)", id).Updates(update); err != nil {
 		return err
 	}
 	return nil
